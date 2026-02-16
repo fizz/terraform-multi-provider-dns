@@ -48,6 +48,7 @@ Set a provider's zone ID to enable it. Leave it `null` (the default) to skip it.
 - **TXT**: grouped in one record set for R53, one resource per value for Cloudflare
 - **Alias/CNAME flattening**: R53 `alias {}` block for A/AAAA pointing at AWS resources, Cloudflare CNAME with automatic apex flattening
 - **NS mirroring**: when both providers are enabled, R53 nameservers are automatically registered in Cloudflare
+- **Multi-provider auto-enablement**: the module sets `multi_provider = true` on the Cloudflare zone via `cloudflare_zone_dns_settings`, gated on `local.multi_provider` (both providers active). Without this, Cloudflare silently ignores NS records at the zone apex. Callers don't need to toggle multi-provider DNS in the Cloudflare dashboard or manage a separate resource.
 
 ## Inputs
 
