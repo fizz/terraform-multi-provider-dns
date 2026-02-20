@@ -3,10 +3,10 @@
 # =============================================================================
 
 resource "aws_route53_record" "records" {
-  for_each = local.r53_enabled ? var.records : {}
+  for_each = local.r53_enabled ? local.r53_aggregated : {}
 
   zone_id = var.r53_zone_id
-  name    = local.r53_record_name[each.key]
+  name    = each.value.name
   type    = each.value.type
   ttl     = each.value.ttl
   records = each.value.values

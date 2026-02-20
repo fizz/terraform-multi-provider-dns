@@ -46,9 +46,9 @@ variable "enable_cloudflare" {
 variable "records" {
   description = "DNS records to create in all enabled providers. Values use R53 format (e.g., MX: '10 mx1.example.com')."
   type = map(object({
-    name    = string        # "" for apex, or subdomain like "fm1._domainkey"
-    type    = string        # A, AAAA, CNAME, MX, TXT
-    values  = list(string)  # R53-style values: ["10 mx1.example.com"] for MX
+    name    = string       # "" for apex, or subdomain like "fm1._domainkey"
+    type    = string       # A, AAAA, CNAME, MX, TXT
+    values  = list(string) # R53-style values: ["10 mx1.example.com"] for MX
     ttl     = optional(number, 300)
     proxied = optional(bool, false) # Cloudflare-specific, ignored by other providers
   }))
@@ -58,10 +58,10 @@ variable "records" {
 variable "alias_records" {
   description = "Records using R53 alias / CF CNAME flattening (e.g., CloudFront apex)"
   type = map(object({
-    name            = string        # "" for apex
-    types           = list(string)  # ["A", "AAAA"]
-    target          = string        # e.g., "d1mmj5h2bt0af1.cloudfront.net"
-    r53_hosted_zone = string        # e.g., "Z2FDTNDATAQYW2" for CloudFront
+    name            = string       # "" for apex
+    types           = list(string) # ["A", "AAAA"]
+    target          = string       # e.g., "d1mmj5h2bt0af1.cloudfront.net"
+    r53_hosted_zone = string       # e.g., "Z2FDTNDATAQYW2" for CloudFront
   }))
   default = {}
 }

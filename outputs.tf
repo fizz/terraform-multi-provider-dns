@@ -1,5 +1,5 @@
 output "r53_record_fqdns" {
-  description = "Map of record key to FQDN for R53 records"
+  description = "Map of name/type to FQDN for R53 records (aggregated by name+type)"
   value       = { for k, v in aws_route53_record.records : k => v.fqdn }
 }
 

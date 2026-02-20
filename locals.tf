@@ -3,10 +3,19 @@ locals {
   # R53: uses var.records directly — R53 handles multi-value natively
   # =========================================================================
 
-  # R53 record names: "" → domain, "sub" → "sub.domain"
-  r53_record_name = {
-    for key, record in var.records :
-    key => record.name == "" ? var.domain : "${record.name}.${var.domain}"
+  # R53: aggregate records by (name, type) — R53 requires one record set per name+type.
+  # Multiple record keys with the same name+type get their values merged.
+  r53_aggregated = {
+    for group_key, records in {
+      for key, record in var.records :
+      "${record.name}/${record.type}" => record...
+    } :
+    group_key => {
+      name   = records[0].name == "" ? var.domain : "${records[0].name}.${var.domain}"
+      type   = records[0].type
+      ttl    = max([for r in records : r.ttl]...)
+      values = flatten([for r in records : r.values])
+    }
   }
 
   # R53 alias records: one resource per (key, type) pair
@@ -30,10 +39,10 @@ locals {
     for key, record in var.records : {
       for idx, value in record.values :
       "${key}_${idx}" => {
-        name     = record.name == "" ? var.domain : record.name
-        type     = record.type
-        ttl      = record.ttl
-        proxied  = record.proxied
+        name    = record.name == "" ? var.domain : record.name
+        type    = record.type
+        ttl     = record.ttl
+        proxied = length(regexall("_domainkey", record.name)) > 0 ? false : record.proxied
         # MX: parse "10 mx1.example.com" → priority=10, content="mx1.example.com"
         priority = record.type == "MX" ? tonumber(split(" ", value)[0]) : null
         content  = record.type == "MX" ? trimprefix(value, "${split(" ", value)[0]} ") : value
