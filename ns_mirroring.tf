@@ -8,6 +8,10 @@ resource "cloudflare_zone_dns_settings" "multi_provider" {
 
   zone_id        = var.cloudflare_zone_id
   multi_provider = true
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # Register R53 nameservers in Cloudflare so both providers answer
