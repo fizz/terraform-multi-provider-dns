@@ -1,4 +1,4 @@
-# terraform-multi-provider-dns
+# terraform-aws-unified-dns
 
 Define DNS records once, create them in every provider. Ships with Route53 + Cloudflare; adding a provider is one `.tf` file and one variable.
 
@@ -6,7 +6,8 @@ Define DNS records once, create them in every provider. Ships with Route53 + Clo
 
 ```hcl
 module "dns" {
-  source = "git::ssh://git@github.com/fizz/terraform-multi-provider-dns.git?ref=v0.1"
+  source = "fizz/unified-dns/aws"
+  version = "~> 0.2"
 
   domain             = "example.com"
   r53_zone_id        = aws_route53_zone.main.zone_id
