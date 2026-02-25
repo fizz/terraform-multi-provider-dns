@@ -16,12 +16,12 @@ resource "cloudflare_zone_dns_settings" "multi_provider" {
 
 # Register R53 nameservers in Cloudflare so both providers answer
 resource "cloudflare_dns_record" "r53_ns" {
-  for_each = local.multi_provider ? toset(var.r53_nameservers) : toset([])
+  for_each = local.multi_provider ? { for i, ns in var.r53_nameservers : "ns${i}" => ns } : {}
 
   zone_id = var.cloudflare_zone_id
   name    = var.domain
   type    = "NS"
-  content = each.key
+  content = each.value
   ttl     = 86400
 
   depends_on = [cloudflare_zone_dns_settings.multi_provider]
