@@ -16,7 +16,12 @@ resource "cloudflare_zone_dns_settings" "multi_provider" {
 
 # Register R53 nameservers in Cloudflare so both providers answer
 resource "cloudflare_dns_record" "r53_ns" {
-  for_each = local.multi_provider ? { for i, ns in var.r53_nameservers : "ns${i}" => ns } : {}
+  for_each = local.multi_provider ? {
+    ns0 = var.r53_nameservers[0]
+    ns1 = var.r53_nameservers[1]
+    ns2 = var.r53_nameservers[2]
+    ns3 = var.r53_nameservers[3]
+  } : {}
 
   zone_id = var.cloudflare_zone_id
   name    = var.domain
